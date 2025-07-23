@@ -1,15 +1,5 @@
-"""words=open("words 1000.txt","r")
-data=words.readlines()
-formatted_data=[]
-for carrier in data:
-    carrier=carrier.strip("\n")
-    formatted_data.append(carrier)
-print(formatted_data)
-file=open("words1000.txt","w")
-for carrier in formatted_data:
-    file.write(carrier+" ")
-file.close()"""
 import random
+
 def wordselect():
     words=open("wordsforhangman.txt","r") #changed file names 'words 1000'-> 'words 1000 original' and 'words1000'-> 'words 1000' but wordsforhangman.txt (the biggest file by a mile!) is the file that is the main one in use. It has a LOT of words (and rather vague ones at that) so it is my humble opinion that it shold be current word pool. Increase the frequency for words by adding repeats at the bottom. This makes it easier to remove repeats
     data=words.readlines()
@@ -40,8 +30,11 @@ def hangmanmain(word):
     
     while not valid:
         emptyspaces = 0
-        letter = input("Choose a letter:")
-        if len(letter)==1:
+        letter = input("Input a letter or the word:")
+        if letter == "":
+            continue
+
+        elif len(letter)==1:
             
             count = 0
             print(cypher)
@@ -60,10 +53,8 @@ def hangmanmain(word):
                 valid = True
                                  
             print(cypher)
-        else:
-            pass
 
-        if len(letter)>1:
+        elif len(letter)>1:
             #code
             if letter==word:
                 temp_list=[]
@@ -77,14 +68,14 @@ def hangmanmain(word):
             else:
                 print(cypher)
         
-        if valid==False:
+        elif valid==False:
             
             if lives==0:
                 print("you lost!")
                 valid=True
             else:
                 lives=lives-1
-    print("The word was",word)
+    print("The word was", str(word))
     print(score)
     return(score)
 def scoresandnames(score):
@@ -125,5 +116,6 @@ def scoresandnames(score):
     else:
         pass
 
-
-scoresandnames(hangmanmain(wordselect()))
+def run():
+    scoresandnames(hangmanmain(wordselect()))
+run()
