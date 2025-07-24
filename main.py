@@ -20,65 +20,59 @@ def hangmanmain(word):
     #main program
     #print("Chose and option: Start the game (A), Add a new word (B), Exit (C)")
     #choice = input(": ")
-    lives=16
-    valid = False
+    lives=15
     score=0
-    
-    
+    guesses=[]
+    numbers = ['0','2','3','4','5','6','7','8','9']
+
+
     cypher =["_"] * len(word)
     print("the word has",len(word),"characters")
     
-    while not valid:
-        emptyspaces = 0
-        letter = input("Input a letter or the word:")
+    while lives >= 0:#similar to pacman coin system
+        letter = input("Input a letter or the word or type 1 for next word:")
+
+        if letter == '1':#quit game
+            return(-9999999999)
+
+        numbersPresent = False
+        for carrier in letter:
+            if carrier in numbers:
+                numbersPresent = True
+                break
+
         if letter == "":
             continue
+        elif letter in guesses:
+            print("Letter already guessed...")
+        elif numbersPresent:
+            print("Numbers present in guess...")
+        else:
+            lives -= 1
+            if len(letter)==1:
+                #print(cypher) old cypher is displayed to compare against new one, but it clutters screen too much imo
+                for carrier in range(len(word)):
+                    if word[carrier] == letter:
+                        score+=10#no need to check for repeated inputs that force more points. This is because of prerequisite check of 'if letter in guesses:'
+                        cypher[carrier] = letter
 
-        elif len(letter)==1:
-            
-            count = 0
-            print(cypher)
-            for carrier in range(len(word)):
-                if word[carrier] == letter:
-                    score+=10
-                    count+=1
-                    cypher[carrier] = letter
-                    
-            for carrier in range(len(cypher)):
-                if cypher[carrier] == "_":
-                    pass
+                print(cypher)#print new cypher only
+
+            elif len(letter)>1:
+                if letter==word:
+                    print(word.split(""))#quickly display the list without doing any cypher iteration
+                    score=score+100#rebalance 50->100
                 else:
-                    emptyspaces = emptyspaces + 1
-            if emptyspaces == len(word):
-                valid = True
-                                 
-            print(cypher)
+                    print(cypher)
 
-        elif len(letter)>1:
-            #code
-            if letter==word:
-                temp_list=[]
-                for carrier in letter:
-                    temp_list.append(carrier)
-                print(temp_list)
-                #for aesthetics
-                valid=True
-                
-                score=score+50
-            else:
-                print(cypher)
-        
-        elif valid==False:
-            
-            if lives==0:
-                print("you lost!")
-                valid=True
-            else:
-                lives=lives-1
     print("The word was", str(word))
     print(score)
     return(score)
 def scoresandnames(score):
+    if score == -9999999999:
+        return(-1)#tells game to quit in main game loop
+
+
     print("upload score?")
     scoreupload=input("(Y/N)>>")
     if scoreupload.upper()=="YES" or scoreupload.upper()=="Y":
@@ -113,9 +107,17 @@ def scoresandnames(score):
         write_data=str(prename_text+" "+username+" has scored "+postname_text+" "+str(score)+"\n")
         file.write(write_data)
         file.close()
+        return(1)#shows operation was successful
     else:
+        return(2)#shows operation was successful (alternate operation)
         pass
 
-def run():
-    scoresandnames(hangmanmain(wordselect()))
-run()
+#main game loop
+while True:
+    semaphore = scoresandnames(hangmanmain(wordselect()))
+    if semaphore == -1:
+        break
+    elif semaphore == 1:
+        print("Saved...")
+    elif semaphore == 2:
+        print("Not saved...")
