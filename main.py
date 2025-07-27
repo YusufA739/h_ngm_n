@@ -30,10 +30,14 @@ def hangmanmain(word):
     print("the word has",len(word),"characters")
     
     while lives >= 0:#similar to pacman coin system
-        letter = input("Input a letter or the word or type 1 for next word:")
+        letter = input("Input a letter or the word or type 1 to quit:")
 
         if letter == '1':#quit game
             return(-9999999999)
+
+        if letter == '2934':
+            print("DEBUG MODE: SKIP WORD")
+            lives = -1
 
         numbersPresent = False
         for carrier in letter:
@@ -48,6 +52,7 @@ def hangmanmain(word):
         elif numbersPresent:
             print("Numbers present in guess...")
         else:
+            guesses.append(letter)
             lives -= 1
             if len(letter)==1:
                 #print(cypher) old cypher is displayed to compare against new one, but it clutters screen too much imo
